@@ -86,6 +86,36 @@ function initializeQuickConvert() {
 }
 
 // ========================================
+// Keyboard Shortcuts
+// ========================================
+
+document.addEventListener('keydown', (e) => {
+    // Ctrl/Cmd + O to open file picker
+    if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
+        e.preventDefault();
+        fileInput.click();
+    }
+});
+
+// Paste image from clipboard
+document.addEventListener('paste', async (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (const item of items) {
+        if (item.type.startsWith('image/')) {
+            e.preventDefault();
+            const file = item.getAsFile();
+            if (file) {
+                showNotification('Image pasted from clipboard!', 'success');
+                handleFileSelect(file);
+            }
+            break;
+        }
+    }
+});
+
+// ========================================
 // Upload Functionality
 // ========================================
 
