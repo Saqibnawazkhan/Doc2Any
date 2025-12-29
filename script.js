@@ -1571,6 +1571,9 @@ function showNotification(message, type = 'info') {
     notification.innerHTML = `
         <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
         <span>${message}</span>
+        <button class="notification-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
     `;
 
     // Add notification styles dynamically
@@ -1578,18 +1581,41 @@ function showNotification(message, type = 'info') {
         position: fixed;
         top: 20px;
         right: 20px;
-        padding: 15px 25px;
-        border-radius: 10px;
+        padding: 15px 45px 15px 20px;
+        border-radius: 12px;
         background: ${type === 'success' ? '#68d391' : type === 'error' ? '#fc8181' : '#5B6EE1'};
         color: white;
         font-weight: 500;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
         z-index: 3000;
         animation: slideIn 0.3s ease;
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        max-width: 400px;
     `;
+
+    // Style the close button
+    const closeBtn = notification.querySelector('.notification-close');
+    if (closeBtn) {
+        closeBtn.style.cssText = `
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        `;
+    }
 
     // Add animation keyframes
     if (!document.querySelector('#notification-styles')) {
