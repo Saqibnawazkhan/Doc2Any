@@ -63,9 +63,27 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeModal();
     initializeFormatButtons();
     initializeFormatCards(); // Make format cards in the grid clickable
+    initializeQuickConvert(); // Quick convert buttons
     initializeAnimations();
     updateStats();
 });
+
+// ========================================
+// Quick Convert Functionality
+// ========================================
+
+function initializeQuickConvert() {
+    const quickBtns = document.querySelectorAll('.quick-btn');
+
+    quickBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const format = btn.dataset.format;
+            preselectedTargetFormat = format;
+            showNotification(`Select a file to convert to ${format.toUpperCase()}`, 'info');
+            fileInput.click();
+        });
+    });
+}
 
 // ========================================
 // Upload Functionality

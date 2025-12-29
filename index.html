@@ -63,120 +63,49 @@
                 <!-- Upload Box -->
                 <div class="upload-box" id="uploadBox">
                     <div class="upload-icon">
-                        <i class="fas fa-plus"></i>
+                        <i class="fas fa-cloud-arrow-up"></i>
                     </div>
-                    <p class="upload-text">Choose Files</p>
-                    <p class="upload-limit">Up to 100 MB</p>
+                    <p class="upload-text">Drop files here or click to browse</p>
+                    <p class="upload-limit">Supports PDF, DOCX, Images & more (up to 100 MB)</p>
                     <input type="file" id="fileInput" multiple accept=".doc,.docx,.pdf,.odt,.txt,.rtf,.xls,.xlsx,.ppt,.pptx,.csv,.jpg,.jpeg,.png,.gif,.bmp,.webp,.svg,.tiff,.tif,.ico" hidden>
                 </div>
 
-                <p class="upload-note">
-                    <i class="fas fa-cloud-arrow-up"></i> Drop files here. 100 MB maximum file size
-                </p>
-            </div>
-
-            <!-- Decorative Elements -->
-            <div class="paper-plane">
-                <svg viewBox="0 0 100 100" width="120" height="120">
-                    <polygon points="10,50 50,10 50,40 90,40 50,90 50,60 10,50" fill="#5B6EE1"/>
-                    <polygon points="50,40 90,40 50,90 50,60" fill="#EE5A5A"/>
-                    <polygon points="10,50 50,60 50,90" fill="#FFD93D"/>
-                </svg>
-            </div>
-
-            <div class="dashed-circle"></div>
-
-            <div class="floating-card card-1">
-                <div class="geometric-art art-1">
-                    <div class="geo-shape shape-1"></div>
-                    <div class="geo-shape shape-2"></div>
-                    <div class="geo-shape shape-3"></div>
+                <!-- Quick Convert Buttons -->
+                <div class="quick-convert">
+                    <span class="quick-label">Quick convert to:</span>
+                    <button class="quick-btn" data-format="pdf"><i class="fas fa-file-pdf"></i> PDF</button>
+                    <button class="quick-btn" data-format="docx"><i class="fas fa-file-word"></i> DOCX</button>
+                    <button class="quick-btn" data-format="jpg"><i class="fas fa-file-image"></i> JPG</button>
+                    <button class="quick-btn" data-format="png"><i class="fas fa-file-image"></i> PNG</button>
                 </div>
             </div>
 
-            <div class="floating-card card-2">
-                <div class="geometric-art art-2">
-                    <div class="geo-shape shape-4"></div>
-                    <div class="geo-shape shape-5"></div>
-                    <div class="geo-shape shape-6"></div>
-                </div>
-            </div>
-
-            <div class="app-icon">
-                <div class="icon-inner">
-                    <div class="arrow-circle">
-                        <i class="fas fa-arrow-rotate-right"></i>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features">
+    <!-- Features Section - Simplified -->
+    <section class="features-simple">
         <div class="container">
-            <div class="features-grid">
-                <div class="feature-text">
-                    <h2 class="feature-title">We provide safest choice for Convertions</h2>
-                    <p class="feature-description">
-                        Our file conversion service relies on trusted and reputable technology developed by our team of experts. We have meticulously designed our software to prioritize user security and privacy. By using our software, you can have peace of mind knowing that your files are handled with the utmost care.
-                    </p>
+            <div class="features-row">
+                <div class="feature-item">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Fast Conversion</h3>
+                    <p>Convert files instantly in your browser</p>
                 </div>
-                <div class="feature-stats">
-                    <div class="stats-card">
-                        <div class="stats-header">
-                            <h3>Safety First</h3>
-                            <button class="stats-menu"><i class="fas fa-ellipsis"></i></button>
-                        </div>
-                        <div class="stats-content">
-                            <div class="donut-chart">
-                                <svg viewBox="0 0 200 200" class="chart-svg">
-                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#f0f0f0" stroke-width="30"/>
-                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#EE5A5A" stroke-width="30"
-                                            stroke-dasharray="125 377" stroke-dashoffset="0" class="chart-segment seg-1"/>
-                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#5B6EE1" stroke-width="30"
-                                            stroke-dasharray="85 377" stroke-dashoffset="-125" class="chart-segment seg-2"/>
-                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#FFD93D" stroke-width="30"
-                                            stroke-dasharray="70 377" stroke-dashoffset="-210" class="chart-segment seg-3"/>
-                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#4ECDC4" stroke-width="30"
-                                            stroke-dasharray="50 377" stroke-dashoffset="-280" class="chart-segment seg-4"/>
-                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#95E1D3" stroke-width="30"
-                                            stroke-dasharray="47 377" stroke-dashoffset="-330" class="chart-segment seg-5"/>
-                                </svg>
-                                <div class="chart-center">
-                                    <span class="chart-label">TOTAL</span>
-                                    <span class="chart-value">1,258</span>
-                                </div>
-                            </div>
-                            <div class="stats-legend">
-                                <div class="legend-item">
-                                    <span class="legend-dot" style="background: #EE5A5A"></span>
-                                    <span class="legend-text">Encryption</span>
-                                    <span class="legend-value">23%</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-dot" style="background: #5B6EE1"></span>
-                                    <span class="legend-text">Security Updates</span>
-                                    <span class="legend-value">17%</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-dot" style="background: #FFD93D"></span>
-                                    <span class="legend-text">Offline Conversion</span>
-                                    <span class="legend-value">13%</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-dot" style="background: #4ECDC4"></span>
-                                    <span class="legend-text">Social</span>
-                                    <span class="legend-value">12%</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-dot" style="background: #95E1D3"></span>
-                                    <span class="legend-text">Trusted Software</span>
-                                    <span class="legend-value">99%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="feature-item">
+                    <i class="fas fa-shield-halved"></i>
+                    <h3>100% Secure</h3>
+                    <p>Files never leave your device</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-infinity"></i>
+                    <h3>Unlimited</h3>
+                    <p>No daily limits or restrictions</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-wifi-slash"></i>
+                    <h3>Works Offline</h3>
+                    <p>No internet needed after page loads</p>
                 </div>
             </div>
         </div>
