@@ -1581,6 +1581,14 @@ function initializeStats() {
     fileCount = parseInt(fileCount);
     totalSizeBytes = parseFloat(totalSizeBytes);
 
+    // Reset if values are unrealistically high (legacy dummy data)
+    if (fileCount > 1000000 || totalSizeBytes > 1000000000000) {
+        fileCount = 0;
+        totalSizeBytes = 0;
+        localStorage.setItem('doc2any_conversions', 0);
+        localStorage.setItem('doc2any_total_size', 0);
+    }
+
     // Update display
     updateStatsDisplay(fileCount, totalSizeBytes);
 }
