@@ -222,8 +222,14 @@ body {
 
 .upload-box:hover {
     background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.5);
-    transform: translateY(-2px);
+    border-color: var(--accent-green);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.upload-box:hover .upload-icon {
+    transform: scale(1.1);
+    background: var(--accent-green);
 }
 
 .upload-box.dragover {
@@ -242,6 +248,7 @@ body {
     margin: 0 auto 15px;
     font-size: 1.5rem;
     color: var(--text-light);
+    transition: all 0.3s;
 }
 
 .upload-text {
