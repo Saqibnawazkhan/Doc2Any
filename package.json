@@ -1,0 +1,11 @@
+{
+  "name": "doc2any",
+  "version": "1.0.0",
+  "description": "File converter web application",
+  "scripts": {
+    "dev": "npx serve .",
+    "start": "npx serve ."
+  },
+  "keywords": ["file-converter", "pdf", "docx", "ocr"],
+  "license": "MIT"
+}

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc2Any - File Converter</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PDF Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Mammoth for DOCX reading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <!-- PDF.js for PDF reading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- docx.js for DOCX creation -->
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
+    <!-- ExcelJS for XLSX creation -->
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+    <!-- PptxGenJS for PPTX creation -->
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    <!-- FileSaver for downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- JSZip for reading PPTX/XLSX files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- Tesseract.js for OCR -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <span class="logo-circle"></span>
+                        <span class="logo-half"></span>
+                    </div>
+                    <span class="logo-text">Doc2Any</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#convert" class="nav-link active">Convert <i class="fas fa-chevron-down"></i></a></li>
+                    <li><a href="#ocr" class="nav-link">OCR</a></li>
+                    <li><a href="#help" class="nav-link">Help</a></li>
+                </ul>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="convert">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">File Converter</h1>
+                <p class="hero-subtitle">Convert your files to any format</p>
+                <p class="hero-stats">
+                    You've converted <span class="highlight" id="totalFiles">0</span> files with a total size of <span class="highlight" id="totalSize">0</span> MB
+                </p>
+
+                <!-- Upload Box -->
+                <div class="upload-box" id="uploadBox">
+                    <div class="upload-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <p class="upload-text">Choose Files</p>
+                    <p class="upload-limit">Up to 100 MB</p>
+                    <input type="file" id="fileInput" multiple accept=".doc,.docx,.pdf,.odt,.txt,.rtf,.xls,.xlsx,.ppt,.pptx,.csv,.jpg,.jpeg,.png,.gif,.bmp,.webp,.svg,.tiff,.tif,.ico" hidden>
+                </div>
+
+                <p class="upload-note">
+                    <i class="fas fa-cloud-arrow-up"></i> Drop files here. 100 MB maximum file size
+                </p>
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="paper-plane">
+                <svg viewBox="0 0 100 100" width="120" height="120">
+                    <polygon points="10,50 50,10 50,40 90,40 50,90 50,60 10,50" fill="#5B6EE1"/>
+                    <polygon points="50,40 90,40 50,90 50,60" fill="#EE5A5A"/>
+                    <polygon points="10,50 50,60 50,90" fill="#FFD93D"/>
+                </svg>
+            </div>
+
+            <div class="dashed-circle"></div>
+
+            <div class="floating-card card-1">
+                <div class="geometric-art art-1">
+                    <div class="geo-shape shape-1"></div>
+                    <div class="geo-shape shape-2"></div>
+                    <div class="geo-shape shape-3"></div>
+                </div>
+            </div>
+
+            <div class="floating-card card-2">
+                <div class="geometric-art art-2">
+                    <div class="geo-shape shape-4"></div>
+                    <div class="geo-shape shape-5"></div>
+                    <div class="geo-shape shape-6"></div>
+                </div>
+            </div>
+
+            <div class="app-icon">
+                <div class="icon-inner">
+                    <div class="arrow-circle">
+                        <i class="fas fa-arrow-rotate-right"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-text">
+                    <h2 class="feature-title">We provide safest choice for Convertions</h2>
+                    <p class="feature-description">
+                        Our file conversion service relies on trusted and reputable technology developed by our team of experts. We have meticulously designed our software to prioritize user security and privacy. By using our software, you can have peace of mind knowing that your files are handled with the utmost care.
+                    </p>
+                </div>
+                <div class="feature-stats">
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <h3>Safety First</h3>
+                            <button class="stats-menu"><i class="fas fa-ellipsis"></i></button>
+                        </div>
+                        <div class="stats-content">
+                            <div class="donut-chart">
+                                <svg viewBox="0 0 200 200" class="chart-svg">
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#f0f0f0" stroke-width="30"/>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#EE5A5A" stroke-width="30"
+                                            stroke-dasharray="125 377" stroke-dashoffset="0" class="chart-segment seg-1"/>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#5B6EE1" stroke-width="30"
+                                            stroke-dasharray="85 377" stroke-dashoffset="-125" class="chart-segment seg-2"/>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#FFD93D" stroke-width="30"
+                                            stroke-dasharray="70 377" stroke-dashoffset="-210" class="chart-segment seg-3"/>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#4ECDC4" stroke-width="30"
+                                            stroke-dasharray="50 377" stroke-dashoffset="-280" class="chart-segment seg-4"/>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#95E1D3" stroke-width="30"
+                                            stroke-dasharray="47 377" stroke-dashoffset="-330" class="chart-segment seg-5"/>
+                                </svg>
+                                <div class="chart-center">
+                                    <span class="chart-label">TOTAL</span>
+                                    <span class="chart-value">1,258</span>
+                                </div>
+                            </div>
+                            <div class="stats-legend">
+                                <div class="legend-item">
+                                    <span class="legend-dot" style="background: #EE5A5A"></span>
+                                    <span class="legend-text">Encryption</span>
+                                    <span class="legend-value">23%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot" style="background: #5B6EE1"></span>
+                                    <span class="legend-text">Security Updates</span>
+                                    <span class="legend-value">17%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot" style="background: #FFD93D"></span>
+                                    <span class="legend-text">Offline Conversion</span>
+                                    <span class="legend-value">13%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot" style="background: #4ECDC4"></span>
+                                    <span class="legend-text">Social</span>
+                                    <span class="legend-value">12%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot" style="background: #95E1D3"></span>
+                                    <span class="legend-text">Trusted Software</span>
+                                    <span class="legend-value">99%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Supported Formats Section -->
+    <section class="formats">
+        <div class="container">
+            <h2 class="section-title">Supported Formats</h2>
+            <p class="section-subtitle">Convert between 50+ document formats</p>
+            <div class="formats-grid" id="formatsGrid">
+                <div class="format-card" data-target-format="pdf">
+                    <div class="format-icon pdf"><i class="fas fa-file-pdf"></i></div>
+                    <span class="format-name">PDF</span>
+                    <span class="format-hint">Click to convert to PDF</span>
+                </div>
+                <div class="format-card" data-target-format="docx">
+                    <div class="format-icon word"><i class="fas fa-file-word"></i></div>
+                    <span class="format-name">DOCX</span>
+                    <span class="format-hint">Click to convert to DOCX</span>
+                </div>
+                <div class="format-card" data-target-format="txt">
+                    <div class="format-icon txt"><i class="fas fa-file-lines"></i></div>
+                    <span class="format-name">TXT</span>
+                    <span class="format-hint">Click to convert to TXT</span>
+                </div>
+                <div class="format-card" data-target-format="odt">
+                    <div class="format-icon odt"><i class="fas fa-file-alt"></i></div>
+                    <span class="format-name">ODT</span>
+                    <span class="format-hint">Click to convert to ODT</span>
+                </div>
+                <div class="format-card" data-target-format="rtf">
+                    <div class="format-icon rtf"><i class="fas fa-file-contract"></i></div>
+                    <span class="format-name">RTF</span>
+                    <span class="format-hint">Click to convert to RTF</span>
+                </div>
+                <div class="format-card" data-target-format="xlsx">
+                    <div class="format-icon excel"><i class="fas fa-file-excel"></i></div>
+                    <span class="format-name">XLSX</span>
+                    <span class="format-hint">Click to convert to XLSX</span>
+                </div>
+                <div class="format-card" data-target-format="pptx">
+                    <div class="format-icon ppt"><i class="fas fa-file-powerpoint"></i></div>
+                    <span class="format-name">PPTX</span>
+                    <span class="format-hint">Click to convert to PPTX</span>
+                </div>
+                <div class="format-card" data-target-format="html">
+                    <div class="format-icon html"><i class="fas fa-file-code"></i></div>
+                    <span class="format-name">HTML</span>
+                    <span class="format-hint">Click to convert to HTML</span>
+                </div>
+                <div class="format-card" data-target-format="csv">
+                    <div class="format-icon csv"><i class="fas fa-file-csv"></i></div>
+                    <span class="format-name">CSV</span>
+                    <span class="format-hint">Click to convert to CSV</span>
+                </div>
+                <div class="format-card" data-target-format="jpg">
+                    <div class="format-icon jpg"><i class="fas fa-file-image"></i></div>
+                    <span class="format-name">JPG</span>
+                    <span class="format-hint">Click to convert to JPG</span>
+                </div>
+                <div class="format-card" data-target-format="png">
+                    <div class="format-icon png"><i class="fas fa-file-image"></i></div>
+                    <span class="format-name">PNG</span>
+                    <span class="format-hint">Click to convert to PNG</span>
+                </div>
+                <div class="format-card" data-target-format="webp">
+                    <div class="format-icon webp"><i class="fas fa-file-image"></i></div>
+                    <span class="format-name">WEBP</span>
+                    <span class="format-hint">Click to convert to WEBP</span>
+                </div>
+                <div class="format-card" data-target-format="gif">
+                    <div class="format-icon gif"><i class="fas fa-file-image"></i></div>
+                    <span class="format-name">GIF</span>
+                    <span class="format-hint">Click to convert to GIF</span>
+                </div>
+                <div class="format-card" data-target-format="bmp">
+                    <div class="format-icon bmp"><i class="fas fa-file-image"></i></div>
+                    <span class="format-name">BMP</span>
+                    <span class="format-hint">Click to convert to BMP</span>
+                </div>
+                <div class="format-card" data-target-format="ico">
+                    <div class="format-icon ico"><i class="fas fa-file-image"></i></div>
+                    <span class="format-name">ICO</span>
+                    <span class="format-hint">Click to convert to ICO</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">Convert your files in three simple steps</p>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+                    <h3 class="step-title">Upload File</h3>
+                    <p class="step-desc">Select or drag & drop your file into the upload area</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon"><i class="fas fa-arrows-rotate"></i></div>
+                    <h3 class="step-title">Choose Format</h3>
+                    <p class="step-desc">Select the output format you want to convert to</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon"><i class="fas fa-download"></i></div>
+                    <h3 class="step-title">Download</h3>
+                    <p class="step-desc">Download your converted file instantly</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OCR Section -->
+    <section class="ocr-section" id="ocr">
+        <div class="container">
+            <h2 class="section-title">OCR - Text Recognition</h2>
+            <p class="section-subtitle">Extract text from images and scanned documents</p>
+            <div class="ocr-content">
+                <div class="ocr-features">
+                    <div class="ocr-feature-card">
+                        <div class="ocr-icon"><i class="fas fa-image"></i></div>
+                        <h3>Image to Text</h3>
+                        <p>Convert JPG, PNG, and other image formats to editable text</p>
+                    </div>
+                    <div class="ocr-feature-card">
+                        <div class="ocr-icon"><i class="fas fa-file-pdf"></i></div>
+                        <h3>Scanned PDFs</h3>
+                        <p>Extract text from scanned PDF documents with high accuracy</p>
+                    </div>
+                    <div class="ocr-feature-card">
+                        <div class="ocr-icon"><i class="fas fa-language"></i></div>
+                        <h3>Multi-Language</h3>
+                        <p>Support for 100+ languages including handwriting recognition</p>
+                    </div>
+                </div>
+                <div class="ocr-upload">
+                    <div class="ocr-upload-box" id="ocrUploadBox">
+                        <i class="fas fa-camera" id="ocrUploadIcon"></i>
+                        <p id="ocrUploadText">Drop image or scanned document here</p>
+                        <span id="ocrUploadHint">Supports JPG, PNG, TIFF, BMP, WEBP</span>
+                        <div class="ocr-progress" id="ocrProgress" style="display: none;">
+                            <div class="ocr-progress-bar">
+                                <div class="ocr-progress-fill" id="ocrProgressFill"></div>
+                            </div>
+                            <span class="ocr-progress-text" id="ocrProgressText">Initializing OCR...</span>
+                        </div>
+                        <input type="file" id="ocrFileInput" accept=".jpg,.jpeg,.png,.tiff,.tif,.bmp,.webp" hidden>
+                    </div>
+                    <div class="ocr-language-select">
+                        <label for="ocrLanguage">Recognition Language:</label>
+                        <select id="ocrLanguage">
+                            <option value="eng" selected>English</option>
+                            <option value="spa">Spanish</option>
+                            <option value="fra">French</option>
+                            <option value="deu">German</option>
+                            <option value="ita">Italian</option>
+                            <option value="por">Portuguese</option>
+                            <option value="rus">Russian</option>
+                            <option value="jpn">Japanese</option>
+                            <option value="kor">Korean</option>
+                            <option value="chi_sim">Chinese (Simplified)</option>
+                            <option value="chi_tra">Chinese (Traditional)</option>
+                            <option value="ara">Arabic</option>
+                            <option value="hin">Hindi</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OCR Result Modal -->
+    <div class="modal" id="ocrModal">
+        <div class="modal-content ocr-modal-content">
+            <button class="modal-close" id="closeOcrModal"><i class="fas fa-times"></i></button>
+            <h2 class="modal-title">OCR Result</h2>
+
+            <div class="ocr-result-container">
+                <div class="ocr-image-preview">
+                    <img id="ocrPreviewImage" src="" alt="Uploaded image">
+                </div>
+                <div class="ocr-text-result">
+                    <div class="ocr-text-header">
+                        <span>Extracted Text</span>
+                        <div class="ocr-text-actions">
+                            <button class="ocr-action-btn" id="copyOcrText" title="Copy to clipboard">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="ocr-action-btn" id="downloadOcrText" title="Download as TXT">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <textarea id="ocrResultText" readonly placeholder="Extracted text will appear here..."></textarea>
+                    <div class="ocr-stats">
+                        <span id="ocrCharCount">0 characters</span>
+                        <span id="ocrWordCount">0 words</span>
+                        <span id="ocrConfidence">Confidence: 0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ocr-modal-actions">
+                <button class="btn-ocr-convert" id="convertOcrResult">
+                    <i class="fas fa-file-export"></i> Convert to Document
+                </button>
+                <button class="btn-ocr-new" id="newOcrScan">
+                    <i class="fas fa-redo"></i> Scan New Image
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Section -->
+    <section class="help-section" id="help">
+        <div class="container">
+            <h2 class="section-title">Help & Support</h2>
+            <p class="section-subtitle">Find answers to common questions</p>
+            <div class="help-content">
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>What file formats are supported?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We support over 50 file formats including PDF, DOCX, DOC, ODT, TXT, RTF, XLSX, PPTX, HTML, CSV, and many more. You can convert between any of these formats seamlessly.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Is my data secure?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Absolutely! All file transfers are encrypted using SSL/TLS. Your files are automatically deleted from our servers within 1 hour after conversion. We never share or access your file contents.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>What is the maximum file size?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Free users can convert files up to 25 MB. Pro users get 100 MB limit, and Enterprise users can convert files up to 500 MB. Need more? Contact us for custom solutions.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>How do I get API access?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>API access is available with Pro and Enterprise plans. After signing up, you'll receive your API key in your dashboard. Check our documentation for integration guides and examples.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Can I use Doc2Any offline?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! Our web app uses client-side processing for many conversions, so once loaded, you can convert files even without an internet connection. Some advanced features require server processing.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="help-contact">
+                    <h3>Still need help?</h3>
+                    <p>Our support team is here to assist you</p>
+                    <div class="contact-options">
+                        <a href="mailto:support@doc2any.com" class="contact-option">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email Support</span>
+                        </a>
+                        <a href="#" class="contact-option">
+                            <i class="fas fa-comments"></i>
+                            <span>Live Chat</span>
+                        </a>
+                        <a href="#" class="contact-option">
+                            <i class="fas fa-book"></i>
+                            <span>Documentation</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conversion Modal -->
+    <div class="modal" id="conversionModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+            <h2 class="modal-title">Convert Your File</h2>
+
+            <div class="file-info" id="fileInfo">
+                <div class="file-icon"><i class="fas fa-file"></i></div>
+                <div class="file-details">
+                    <span class="file-name" id="fileName">document.docx</span>
+                    <span class="file-size" id="fileSize">2.4 MB</span>
+                </div>
+            </div>
+
+            <div class="conversion-options">
+                <label class="option-label">Convert to:</label>
+                <div class="format-buttons" id="formatButtons">
+                    <button class="format-btn" data-format="pdf">PDF</button>
+                    <button class="format-btn" data-format="docx">DOCX</button>
+                    <button class="format-btn" data-format="txt">TXT</button>
+                    <button class="format-btn" data-format="odt">ODT</button>
+                    <button class="format-btn" data-format="rtf">RTF</button>
+                    <button class="format-btn" data-format="xlsx">XLSX</button>
+                    <button class="format-btn" data-format="pptx">PPTX</button>
+                    <button class="format-btn" data-format="html">HTML</button>
+                    <button class="format-btn" data-format="csv">CSV</button>
+                    <button class="format-btn" data-format="jpg">JPG</button>
+                    <button class="format-btn" data-format="png">PNG</button>
+                    <button class="format-btn" data-format="webp">WEBP</button>
+                    <button class="format-btn" data-format="gif">GIF</button>
+                    <button class="format-btn" data-format="bmp">BMP</button>
+                    <button class="format-btn" data-format="ico">ICO</button>
+                </div>
+            </div>
+
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="progress-text" id="progressText">Converting... 0%</span>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-convert" id="convertBtn">
+                    <i class="fas fa-arrows-rotate"></i> Convert Now
+                </button>
+            </div>
+
+            <div class="download-section" id="downloadSection" style="display: none;">
+                <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+                <p class="success-text">Conversion Complete!</p>
+                <button class="btn-download" id="downloadBtn">
+                    <i class="fas fa-download"></i> Download File
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <span class="logo-circle"></span>
+                            <span class="logo-half"></span>
+                        </div>
+                        <span class="logo-text">Doc2Any</span>
+                    </div>
+                    <p class="footer-desc">The most trusted file conversion service on the web.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#">Convert</a></li>
+                        <li><a href="#">OCR</a></li>
+                        <li><a href="#">API</a></li>
+                        <li><a href="#">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy</a></li>
+                        <li><a href="#">Terms</a></li>
+                        <li><a href="#">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Doc2Any. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
