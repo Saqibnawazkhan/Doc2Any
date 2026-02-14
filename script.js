@@ -1856,6 +1856,9 @@ function downloadFile() {
     const ext = selectedFile.name.split('.').pop().toLowerCase();
     addToConversionHistory(selectedFile.name, ext, selectedFormat, selectedFile.size);
 
+    // Celebration!
+    launchConfetti();
+
     showNotification('File downloaded successfully!', 'success');
 
     // Close modal after download
@@ -3072,4 +3075,68 @@ function getTimeAgo(date) {
     if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
     if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
     return Math.floor(seconds / 86400) + 'd ago';
+}
+
+// ========================================
+// Confetti Celebration
+// ========================================
+
+function launchConfetti() {
+    const canvas = document.getElementById('confettiCanvas');
+    if (!canvas) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const ctx = canvas.getContext('2d');
+
+    const colors = ['#5B6EE1', '#68d391', '#764ba2', '#f6e05e', '#fc8181', '#4ECDC4'];
+    const particles = [];
+
+    for (let i = 0; i < 100; i++) {
+        particles.push({
+            x: canvas.width / 2 + (Math.random() - 0.5) * 200,
+            y: canvas.height / 2,
+            vx: (Math.random() - 0.5) * 15,
+            vy: -(Math.random() * 15 + 5),
+            color: colors[Math.floor(Math.random() * colors.length)],
+            size: Math.random() * 8 + 4,
+            rotation: Math.random() * 360,
+            rotationSpeed: (Math.random() - 0.5) * 10,
+            gravity: 0.3,
+            opacity: 1
+        });
+    }
+
+    let frame = 0;
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+
+        particles.forEach(p => {
+            if (p.opacity <= 0) return;
+            alive = true;
+            p.vy += p.gravity;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.rotation += p.rotationSpeed;
+            p.opacity -= 0.008;
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+            ctx.restore();
+        });
+
+        frame++;
+        if (alive && frame < 180) {
+            requestAnimationFrame(animate);
+        } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    animate();
 }
