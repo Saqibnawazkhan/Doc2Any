@@ -2605,6 +2605,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeTypingAnimation();
     initializeMobileMenu();
     initializeRippleEffect();
+    initializeParticles();
+    initializeRevealAnimations();
+    initializeParallax();
 });
 
 // ========================================
@@ -2809,5 +2812,76 @@ function initializeRippleEffect() {
 
         target.appendChild(ripple);
         ripple.addEventListener('animationend', () => ripple.remove());
+    });
+}
+
+// ========================================
+// Floating Particles
+// ========================================
+
+function initializeParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+
+    for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        const size = Math.random() * 8 + 3;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDuration = (Math.random() * 10 + 8) + 's';
+        particle.style.animationDelay = (Math.random() * 10) + 's';
+        container.appendChild(particle);
+    }
+}
+
+// ========================================
+// Scroll Reveal Animations (Staggered)
+// ========================================
+
+function initializeRevealAnimations() {
+    const items = document.querySelectorAll('.feature-item, .step-card, .format-card, .faq-item, .ocr-feature-card');
+
+    // Add reveal class and stagger delays
+    let currentParent = null;
+    let childIndex = 0;
+
+    items.forEach(item => {
+        item.classList.add('reveal');
+        if (item.parentElement !== currentParent) {
+            currentParent = item.parentElement;
+            childIndex = 0;
+        }
+        const delay = Math.min(childIndex, 5);
+        item.classList.add('reveal-delay-' + delay);
+        childIndex++;
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    items.forEach(item => observer.observe(item));
+}
+
+// ========================================
+// Parallax Effect on Hero
+// ========================================
+
+function initializeParallax() {
+    const hero = document.querySelector('.hero-content');
+    if (!hero) return;
+
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        if (scrolled < 600) {
+            hero.style.transform = 'translateY(' + (scrolled * 0.3) + 'px)';
+            hero.style.opacity = 1 - (scrolled / 600);
+        }
     });
 }

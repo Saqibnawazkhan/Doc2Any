@@ -2525,3 +2525,101 @@ body {
 .btn-download:hover {
     box-shadow: 0 0 20px rgba(104, 211, 145, 0.5);
 }
+
+/* ========================================
+   Floating Particles
+   ======================================== */
+
+.particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    animation: particleFloat linear infinite;
+}
+
+@keyframes particleFloat {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+}
+
+/* ========================================
+   Staggered Reveal Animations
+   ======================================== */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* ========================================
+   Section Dividers
+   ======================================== */
+
+.features-simple,
+.formats,
+.how-it-works,
+.help-section {
+    position: relative;
+}
+
+.features-simple::before,
+.how-it-works::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-blue), #764ba2);
+    border-radius: 2px;
+}
+
+/* ========================================
+   Parallax Hero Elements
+   ======================================== */
+
+.hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    will-change: transform;
+}
+
+/* ========================================
+   Smooth Number Counter
+   ======================================== */
+
+.counter-animate {
+    display: inline-block;
+    transition: transform 0.3s;
+}
+
+.counter-animate.bump {
+    transform: scale(1.3);
+}
