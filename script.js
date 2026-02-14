@@ -214,6 +214,9 @@ function openModal() {
     // Show available conversion formats based on file type
     updateAvailableFormats(extension);
 
+    // Highlight recommended format
+    highlightRecommendedFormat(extension);
+
     // Show file preview
     showFilePreview(selectedFile);
 
@@ -3139,4 +3142,99 @@ function launchConfetti() {
     }
 
     animate();
+}
+
+// ========================================
+// Keyboard Shortcuts Modal
+// ========================================
+
+document.addEventListener('keydown', (e) => {
+    // Don't trigger if typing in an input
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+
+    const shortcutsModal = document.getElementById('shortcutsModal');
+
+    // ? key to open shortcuts
+    if (e.key === '?' && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        if (shortcutsModal) {
+            shortcutsModal.classList.toggle('active');
+            document.body.style.overflow = shortcutsModal.classList.contains('active') ? 'hidden' : '';
+        }
+    }
+
+    // D key to toggle dark mode
+    if (e.key === 'd' && !e.ctrlKey && !e.metaKey) {
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) themeToggle.click();
+    }
+
+    // T key to scroll to top
+    if (e.key === 't' && !e.ctrlKey && !e.metaKey) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+});
+
+// Close shortcuts modal
+document.addEventListener('DOMContentLoaded', () => {
+    const closeShortcuts = document.getElementById('closeShortcuts');
+    const shortcutsModal = document.getElementById('shortcutsModal');
+
+    if (closeShortcuts && shortcutsModal) {
+        closeShortcuts.addEventListener('click', () => {
+            shortcutsModal.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        shortcutsModal.addEventListener('click', (e) => {
+            if (e.target === shortcutsModal) {
+                shortcutsModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+});
+
+// ========================================
+// Format Recommendations
+// ========================================
+
+const formatRecommendations = {
+    'pdf': 'docx',
+    'docx': 'pdf',
+    'doc': 'pdf',
+    'txt': 'pdf',
+    'rtf': 'pdf',
+    'odt': 'pdf',
+    'html': 'pdf',
+    'csv': 'xlsx',
+    'xls': 'pdf',
+    'xlsx': 'pdf',
+    'ppt': 'pdf',
+    'pptx': 'pdf',
+    'jpg': 'png',
+    'jpeg': 'png',
+    'png': 'jpg',
+    'gif': 'png',
+    'bmp': 'png',
+    'webp': 'png',
+    'svg': 'png',
+    'tiff': 'jpg',
+    'tif': 'jpg',
+    'ico': 'png'
+};
+
+function highlightRecommendedFormat(sourceExtension) {
+    // Remove existing recommendations
+    document.querySelectorAll('.format-btn.recommended').forEach(btn => {
+        btn.classList.remove('recommended');
+    });
+
+    const recommended = formatRecommendations[sourceExtension];
+    if (recommended) {
+        const btn = document.querySelector('.format-btn[data-format="' + recommended + '"]');
+        if (btn && btn.style.display !== 'none') {
+            btn.classList.add('recommended');
+        }
+    }
 }

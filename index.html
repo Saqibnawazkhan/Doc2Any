@@ -86,10 +86,10 @@
                 <!-- Quick Convert Buttons -->
                 <div class="quick-convert">
                     <span class="quick-label">Quick convert to:</span>
-                    <button class="quick-btn" data-format="pdf"><i class="fas fa-file-pdf"></i> PDF</button>
-                    <button class="quick-btn" data-format="docx"><i class="fas fa-file-word"></i> DOCX</button>
-                    <button class="quick-btn" data-format="jpg"><i class="fas fa-file-image"></i> JPG</button>
-                    <button class="quick-btn" data-format="png"><i class="fas fa-file-image"></i> PNG</button>
+                    <button class="quick-btn" data-format="pdf" data-tooltip="Convert any file to PDF"><i class="fas fa-file-pdf"></i> PDF</button>
+                    <button class="quick-btn" data-format="docx" data-tooltip="Convert to Word document"><i class="fas fa-file-word"></i> DOCX</button>
+                    <button class="quick-btn" data-format="jpg" data-tooltip="Convert to JPEG image"><i class="fas fa-file-image"></i> JPG</button>
+                    <button class="quick-btn" data-format="png" data-tooltip="Convert to PNG image"><i class="fas fa-file-image"></i> PNG</button>
                 </div>
             </div>
 
@@ -553,6 +553,40 @@
             </div>
         </div>
     </footer>
+
+    <!-- Keyboard Shortcuts Modal -->
+    <div class="modal" id="shortcutsModal">
+        <div class="modal-content shortcuts-modal">
+            <button class="modal-close" id="closeShortcuts"><i class="fas fa-times"></i></button>
+            <h2 class="modal-title"><i class="fas fa-keyboard"></i> Keyboard Shortcuts</h2>
+            <div class="shortcuts-list">
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>O</kbd></div>
+                    <span>Open file picker</span>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>V</kbd></div>
+                    <span>Paste image from clipboard</span>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><kbd>Esc</kbd></div>
+                    <span>Close modal / menu</span>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><kbd>?</kbd></div>
+                    <span>Show this shortcuts panel</span>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><kbd>D</kbd></div>
+                    <span>Toggle dark mode</span>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><kbd>T</kbd></div>
+                    <span>Scroll to top</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Confetti Canvas -->
     <canvas id="confettiCanvas"></canvas>
