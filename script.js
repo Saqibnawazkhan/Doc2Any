@@ -214,6 +214,9 @@ function openModal() {
     // Show available conversion formats based on file type
     updateAvailableFormats(extension);
 
+    // Show file preview
+    showFilePreview(selectedFile);
+
     // Show modal
     conversionModal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -300,6 +303,7 @@ function initializeFormatButtons() {
             e.target.classList.add('active');
             selectedFormat = e.target.dataset.format;
             convertBtn.disabled = false;
+            updateQualitySliderVisibility();
         }
     });
 }
@@ -2608,6 +2612,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeParticles();
     initializeRevealAnimations();
     initializeParallax();
+    initializeFormatSearch();
+    initializeQualitySlider();
+    initializeFilePreview();
 });
 
 // ========================================
@@ -2884,4 +2891,97 @@ function initializeParallax() {
             hero.style.opacity = 1 - (scrolled / 600);
         }
     });
+}
+
+// ========================================
+// Format Search Filter
+// ========================================
+
+function initializeFormatSearch() {
+    const searchInput = document.getElementById('formatSearch');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('.format-btn').forEach(btn => {
+            const format = btn.dataset.format;
+            if (btn.style.display === 'none' && !query) return; // Already hidden by conversion map
+            if (query && !format.includes(query)) {
+                btn.style.opacity = '0.2';
+                btn.style.pointerEvents = 'none';
+            } else {
+                btn.style.opacity = '';
+                btn.style.pointerEvents = '';
+            }
+        });
+    });
+}
+
+// ========================================
+// Quality Slider for Image Conversions
+// ========================================
+
+function initializeQualitySlider() {
+    const range = document.getElementById('qualityRange');
+    const value = document.getElementById('qualityValue');
+    if (!range || !value) return;
+
+    range.addEventListener('input', () => {
+        value.textContent = range.value;
+    });
+}
+
+// Show/hide quality slider based on selected format
+function updateQualitySliderVisibility() {
+    const slider = document.getElementById('qualitySlider');
+    if (!slider) return;
+    const imageOutputs = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp'];
+    slider.style.display = imageOutputs.includes(selectedFormat) ? 'block' : 'none';
+}
+
+// ========================================
+// File Preview in Modal
+// ========================================
+
+function initializeFilePreview() {
+    // Preview is generated when modal opens
+}
+
+function showFilePreview(file) {
+    const preview = document.getElementById('filePreview');
+    const previewImg = document.getElementById('filePreviewImg');
+    const previewText = document.getElementById('filePreviewText');
+    if (!preview) return;
+
+    const ext = file.name.split('.').pop().toLowerCase();
+
+    // Image files: show thumbnail
+    if (imageFormats.includes(ext)) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            previewImg.style.display = 'block';
+            previewText.style.display = 'none';
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+        return;
+    }
+
+    // Text files: show snippet
+    if (['txt', 'csv', 'html', 'rtf'].includes(ext)) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const text = e.target.result.substring(0, 500);
+            previewText.textContent = text + (e.target.result.length > 500 ? '...' : '');
+            previewText.style.display = 'block';
+            previewImg.style.display = 'none';
+            preview.style.display = 'block';
+        };
+        reader.readAsText(file);
+        return;
+    }
+
+    // Other files: hide preview
+    preview.style.display = 'none';
 }

@@ -427,8 +427,18 @@
                 </div>
             </div>
 
+            <!-- File Preview -->
+            <div class="file-preview" id="filePreview" style="display: none;">
+                <img id="filePreviewImg" src="" alt="File preview">
+                <div id="filePreviewText" class="file-preview-text"></div>
+            </div>
+
             <div class="conversion-options">
                 <label class="option-label">Convert to:</label>
+                <div class="format-search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="formatSearch" class="format-search" placeholder="Search formats...">
+                </div>
                 <div class="format-buttons" id="formatButtons">
                     <button class="format-btn" data-format="pdf">PDF</button>
                     <button class="format-btn" data-format="docx">DOCX</button>
@@ -445,6 +455,16 @@
                     <button class="format-btn" data-format="gif">GIF</button>
                     <button class="format-btn" data-format="bmp">BMP</button>
                     <button class="format-btn" data-format="ico">ICO</button>
+                </div>
+            </div>
+
+            <!-- Quality Slider for Image Conversions -->
+            <div class="quality-slider-container" id="qualitySlider" style="display: none;">
+                <label class="option-label">Image Quality: <span id="qualityValue">92</span>%</label>
+                <input type="range" id="qualityRange" class="quality-range" min="10" max="100" value="92">
+                <div class="quality-labels">
+                    <span>Smaller file</span>
+                    <span>Best quality</span>
                 </div>
             </div>
 
