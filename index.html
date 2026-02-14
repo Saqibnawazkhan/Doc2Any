@@ -47,19 +47,27 @@
                     <li><a href="#ocr" class="nav-link">OCR</a></li>
                     <li><a href="#help" class="nav-link">Help</a></li>
                 </ul>
-                <button class="mobile-menu-btn">
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
                     <i class="fas fa-bars"></i>
                 </button>
             </nav>
         </div>
     </header>
 
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
     <!-- Hero Section -->
     <section class="hero" id="convert">
         <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title">File Converter</h1>
-                <p class="hero-subtitle">Convert your files to any format</p>
+                <h1 class="hero-title" id="heroTitle"></h1>
+                <p class="hero-subtitle">Convert your files to any format — fast, free & secure</p>
                 <p class="hero-stats">
                     You've converted <span class="highlight" id="totalFiles">0</span> files with a total size of <span class="highlight" id="totalSize">0</span> MB
                 </p>
@@ -513,6 +521,30 @@
             </div>
         </div>
     </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" title="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <button class="mobile-menu-close" id="mobileMenuClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <ul class="mobile-nav-links">
+                <li><a href="#convert" class="mobile-nav-link">Convert</a></li>
+                <li><a href="#ocr" class="mobile-nav-link">OCR</a></li>
+                <li><a href="#help" class="mobile-nav-link">Help</a></li>
+            </ul>
+            <div class="mobile-menu-footer">
+                <button class="theme-toggle-mobile" id="themeToggleMobile">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

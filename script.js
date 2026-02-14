@@ -2146,12 +2146,7 @@ function animateChart() {
 // Mobile Menu
 // ========================================
 
-const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-if (mobileMenuBtn) {
-    mobileMenuBtn.addEventListener('click', () => {
-        showNotification('Mobile menu coming soon!', 'info');
-    });
-}
+// Mobile menu is now handled by initializeMobileMenu()
 
 // ========================================
 // Smooth Scrolling
@@ -2604,4 +2599,187 @@ function closeOCRModal() {
 // Initialize OCR on page load
 document.addEventListener('DOMContentLoaded', () => {
     initializeOCR();
+    initializeDarkMode();
+    initializeScrollProgress();
+    initializeBackToTop();
+    initializeTypingAnimation();
+    initializeMobileMenu();
 });
+
+// ========================================
+// Dark Mode
+// ========================================
+
+function initializeDarkMode() {
+    const themeToggle = document.getElementById('themeToggle');
+    const themeToggleMobile = document.getElementById('themeToggleMobile');
+    const saved = localStorage.getItem('doc2any_theme');
+
+    // Apply saved theme or detect system preference
+    if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        updateThemeIcons(true);
+    }
+
+    function toggle() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('doc2any_theme', 'light');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('doc2any_theme', 'dark');
+        }
+        updateThemeIcons(!isDark);
+    }
+
+    function updateThemeIcons(isDark) {
+        const icon = isDark ? 'fa-sun' : 'fa-moon';
+        if (themeToggle) themeToggle.querySelector('i').className = 'fas ' + icon;
+        if (themeToggleMobile) {
+            themeToggleMobile.querySelector('i').className = 'fas ' + icon;
+            themeToggleMobile.querySelector('span').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+        }
+    }
+
+    if (themeToggle) themeToggle.addEventListener('click', toggle);
+    if (themeToggleMobile) themeToggleMobile.addEventListener('click', toggle);
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('doc2any_theme')) {
+            if (e.matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+            updateThemeIcons(e.matches);
+        }
+    });
+}
+
+// ========================================
+// Scroll Progress Bar
+// ========================================
+
+function initializeScrollProgress() {
+    const progressBar = document.getElementById('scrollProgress');
+    if (!progressBar) return;
+
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = scrollPercent + '%';
+    });
+}
+
+// ========================================
+// Back to Top Button
+// ========================================
+
+function initializeBackToTop() {
+    const btn = document.getElementById('backToTop');
+    if (!btn) return;
+
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 400) {
+            btn.classList.add('visible');
+        } else {
+            btn.classList.remove('visible');
+        }
+    });
+
+    btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// ========================================
+// Typing Animation
+// ========================================
+
+function initializeTypingAnimation() {
+    const el = document.getElementById('heroTitle');
+    if (!el) return;
+
+    const phrases = ['File Converter', 'PDF Converter', 'Image Converter', 'OCR Scanner', 'Doc2Any'];
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    // Add cursor
+    const cursor = document.createElement('span');
+    cursor.className = 'typing-cursor';
+    el.appendChild(cursor);
+
+    function type() {
+        const current = phrases[phraseIndex];
+
+        if (!isDeleting) {
+            el.textContent = current.substring(0, charIndex + 1);
+            el.appendChild(cursor);
+            charIndex++;
+
+            if (charIndex === current.length) {
+                isDeleting = true;
+                setTimeout(type, 2000);
+                return;
+            }
+            setTimeout(type, 100);
+        } else {
+            el.textContent = current.substring(0, charIndex - 1);
+            el.appendChild(cursor);
+            charIndex--;
+
+            if (charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                setTimeout(type, 500);
+                return;
+            }
+            setTimeout(type, 50);
+        }
+    }
+
+    type();
+}
+
+// ========================================
+// Mobile Menu
+// ========================================
+
+function initializeMobileMenu() {
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const menu = document.getElementById('mobileMenu');
+    const closeBtn = document.getElementById('mobileMenuClose');
+
+    if (!menuBtn || !menu) return;
+
+    menuBtn.addEventListener('click', () => {
+        menu.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    function close() {
+        menu.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', close);
+
+    // Close on overlay click
+    menu.addEventListener('click', (e) => {
+        if (e.target === menu) close();
+    });
+
+    // Close on link click
+    menu.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', close);
+    });
+
+    // Close on ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menu.classList.contains('active')) close();
+    });
+}
