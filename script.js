@@ -1852,6 +1852,10 @@ function downloadFile() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
+    // Track in conversion history
+    const ext = selectedFile.name.split('.').pop().toLowerCase();
+    addToConversionHistory(selectedFile.name, ext, selectedFormat, selectedFile.size);
+
     showNotification('File downloaded successfully!', 'success');
 
     // Close modal after download
@@ -2615,6 +2619,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeFormatSearch();
     initializeQualitySlider();
     initializeFilePreview();
+    initializeConversionHistory();
 });
 
 // ========================================
@@ -2984,4 +2989,87 @@ function showFilePreview(file) {
 
     // Other files: hide preview
     preview.style.display = 'none';
+}
+
+// ========================================
+// Conversion History
+// ========================================
+
+function initializeConversionHistory() {
+    renderConversionHistory();
+
+    const clearBtn = document.getElementById('clearHistory');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            localStorage.removeItem('doc2any_history');
+            renderConversionHistory();
+            showNotification('History cleared', 'success');
+        });
+    }
+}
+
+function addToConversionHistory(fileName, fromFormat, toFormat, fileSize) {
+    const history = JSON.parse(localStorage.getItem('doc2any_history') || '[]');
+    history.unshift({
+        name: fileName,
+        from: fromFormat,
+        to: toFormat,
+        size: fileSize,
+        date: new Date().toISOString()
+    });
+    // Keep last 20 items
+    if (history.length > 20) history.length = 20;
+    localStorage.setItem('doc2any_history', JSON.stringify(history));
+    renderConversionHistory();
+}
+
+function renderConversionHistory() {
+    const section = document.getElementById('recentConversions');
+    const list = document.getElementById('recentList');
+    if (!section || !list) return;
+
+    const history = JSON.parse(localStorage.getItem('doc2any_history') || '[]');
+
+    if (history.length === 0) {
+        section.style.display = 'none';
+        return;
+    }
+
+    section.style.display = 'block';
+    list.innerHTML = '';
+
+    history.slice(0, 10).forEach(item => {
+        const el = document.createElement('div');
+        el.className = 'recent-item';
+        const iconClass = fileIcons[item.to] || fileIcons['default'];
+        const timeAgo = getTimeAgo(new Date(item.date));
+
+        el.innerHTML =
+            '<div class="recent-item-icon"><i class="fas ' + iconClass + '"></i></div>' +
+            '<div class="recent-item-details">' +
+                '<div class="recent-item-name">' + escapeHTML(item.name) + '</div>' +
+                '<div class="recent-item-meta">' +
+                    '<span>' + item.from.toUpperCase() + '</span>' +
+                    '<span class="recent-item-arrow">→</span>' +
+                    '<span>' + item.to.toUpperCase() + '</span>' +
+                    '<span>•</span>' +
+                    '<span>' + timeAgo + '</span>' +
+                '</div>' +
+            '</div>';
+        list.appendChild(el);
+    });
+}
+
+function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function getTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    if (seconds < 60) return 'Just now';
+    if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+    if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+    return Math.floor(seconds / 86400) + 'd ago';
 }
