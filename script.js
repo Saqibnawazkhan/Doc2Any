@@ -1329,6 +1329,242 @@ async function convertImageToPDF(file) {
 }
 
 // ========================================
+// Image-Preserving Conversion Functions
+// ========================================
+
+// Render a single PDF page to a canvas element
+async function renderPDFPageToCanvas(pdfDoc, pageNum, scale = 2) {
+    const page = await pdfDoc.getPage(pageNum);
+    const viewport = page.getViewport({ scale });
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext('2d');
+    await page.render({ canvasContext: ctx, viewport }).promise;
+    return canvas;
+}
+
+// Convert PDF pages to a single image (combines pages vertically)
+async function convertPDFToImages(file, targetFormat, quality = 0.92) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    const mimeTypes = {
+        'jpg': 'image/jpeg', 'jpeg': 'image/jpeg',
+        'png': 'image/png', 'webp': 'image/webp',
+        'gif': 'image/gif', 'bmp': 'image/bmp'
+    };
+    const mimeType = mimeTypes[targetFormat] || 'image/png';
+    const maxPages = Math.min(pdf.numPages, 20);
+
+    const canvases = [];
+    let totalHeight = 0;
+    let maxWidth = 0;
+
+    for (let i = 1; i <= maxPages; i++) {
+        const canvas = await renderPDFPageToCanvas(pdf, i);
+        canvases.push(canvas);
+        totalHeight += canvas.height;
+        maxWidth = Math.max(maxWidth, canvas.width);
+    }
+
+    const combinedCanvas = document.createElement('canvas');
+    combinedCanvas.width = maxWidth;
+    combinedCanvas.height = totalHeight;
+    const ctx = combinedCanvas.getContext('2d');
+
+    if (['jpg', 'jpeg', 'bmp'].includes(targetFormat)) {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, combinedCanvas.width, combinedCanvas.height);
+    }
+
+    let y = 0;
+    for (const canvas of canvases) {
+        ctx.drawImage(canvas, 0, y);
+        y += canvas.height;
+    }
+
+    if (pdf.numPages > maxPages) {
+        showNotification(`Converted first ${maxPages} of ${pdf.numPages} pages`, 'info');
+    }
+
+    return new Promise((resolve, reject) => {
+        combinedCanvas.toBlob(
+            (blob) => blob ? resolve(blob) : reject(new Error('Failed to create image')),
+            mimeType, quality
+        );
+    });
+}
+
+// Convert DOCX to PDF preserving embedded images
+async function convertDOCXToPDFWithImages(file, originalFileName) {
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.convertToHtml({ arrayBuffer });
+    const html = result.value;
+
+    if (!html.includes('<img')) {
+        return null; // No images found, fall back to text-based conversion
+    }
+
+    const parser = new DOMParser();
+    const parsedDoc = parser.parseFromString('<div>' + html + '</div>', 'text/html');
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+
+    const margin = 20;
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const maxWidth = pageWidth - margin * 2;
+    let y = margin;
+
+    function checkPageBreak(needed) {
+        if (y + needed > pageHeight - margin) {
+            pdf.addPage();
+            y = margin;
+        }
+    }
+
+    async function addImageToPDF(src) {
+        if (!src || !src.startsWith('data:')) return;
+        try {
+            const imgEl = new Image();
+            await new Promise((resolve, reject) => {
+                imgEl.onload = resolve;
+                imgEl.onerror = reject;
+                imgEl.src = src;
+            });
+
+            const pxToMm = 0.264583;
+            let w = imgEl.width * pxToMm;
+            let h = imgEl.height * pxToMm;
+
+            if (w > maxWidth) { h *= maxWidth / w; w = maxWidth; }
+            const maxH = pageHeight - margin * 2;
+            if (h > maxH) { w *= maxH / h; h = maxH; }
+
+            checkPageBreak(h);
+            const fmt = src.includes('image/png') ? 'PNG' : 'JPEG';
+            pdf.addImage(src, fmt, margin, y, w, h);
+            y += h + 5;
+        } catch (e) {
+            console.warn('Failed to add image to PDF:', e);
+        }
+    }
+
+    async function processNode(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const text = node.textContent.trim();
+            if (text) {
+                const lines = pdf.splitTextToSize(text, maxWidth);
+                for (const line of lines) {
+                    checkPageBreak(6);
+                    pdf.text(line, margin, y);
+                    y += 6;
+                }
+            }
+            return;
+        }
+        if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+        const tag = node.tagName;
+
+        if (tag === 'IMG') {
+            await addImageToPDF(node.getAttribute('src'));
+            return;
+        }
+
+        if (/^H[1-6]$/.test(tag)) {
+            const level = parseInt(tag[1]);
+            pdf.setFontSize(18 - level * 2);
+            pdf.setFont('helvetica', 'bold');
+            y += 4;
+        }
+
+        for (const child of node.childNodes) {
+            await processNode(child);
+        }
+
+        if (/^H[1-6]$/.test(tag)) {
+            pdf.setFontSize(11);
+            pdf.setFont('helvetica', 'normal');
+            y += 2;
+        }
+
+        if (['P', 'DIV', 'TABLE', 'UL', 'OL', 'LI', 'BLOCKQUOTE'].includes(tag) || /^H[1-6]$/.test(tag)) {
+            y += 3;
+        }
+    }
+
+    const container = parsedDoc.body.firstChild;
+    for (const child of container.childNodes) {
+        await processNode(child);
+    }
+
+    return pdf.output('blob');
+}
+
+// Convert PDF to DOCX preserving page visuals as embedded images
+async function convertPDFToDOCXWithImages(file, originalFileName) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    const docxLib = window.docx;
+    if (!docxLib || !docxLib.ImageRun) return null;
+
+    const { Document, Packer, Paragraph, TextRun, ImageRun, HeadingLevel, AlignmentType } = docxLib;
+
+    const children = [
+        new Paragraph({
+            children: [new TextRun({ text: "Converted Document", bold: true, size: 32 })],
+            heading: HeadingLevel.HEADING_1,
+            alignment: AlignmentType.CENTER,
+        }),
+        new Paragraph({
+            children: [new TextRun({ text: 'Original: ' + originalFileName, italics: true, color: "666666", size: 20 })],
+            alignment: AlignmentType.CENTER,
+        }),
+        new Paragraph({}),
+    ];
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+        const canvas = await renderPDFPageToCanvas(pdf, i, 2);
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        const imgArrayBuffer = await blob.arrayBuffer();
+
+        const targetWidth = 600;
+        const targetHeight = Math.round(targetWidth * (canvas.height / canvas.width));
+
+        children.push(
+            new Paragraph({
+                children: [
+                    new ImageRun({
+                        data: imgArrayBuffer,
+                        transformation: { width: targetWidth, height: targetHeight },
+                    }),
+                ],
+            })
+        );
+
+        // Extract text below image for searchability
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map(item => item.str).join(' ').trim();
+        if (pageText) {
+            children.push(
+                new Paragraph({
+                    children: [new TextRun({ text: pageText, size: 20 })],
+                    spacing: { after: 400 },
+                })
+            );
+        }
+    }
+
+    const doc = new Document({ sections: [{ properties: {}, children }] });
+    return await Packer.toBlob(doc);
+}
+
+// ========================================
 // Main Conversion Process
 // ========================================
 
@@ -1381,6 +1617,79 @@ async function startConversion() {
             }, 500);
 
             return;
+        }
+
+        // ========================================
+        // Image-Preserving Conversion Paths
+        // ========================================
+
+        // PDF → Image formats: render pages visually instead of extracting text
+        if (extension === 'pdf' && isImageOutput) {
+            progressText.textContent = 'Rendering PDF pages...';
+            if (selectedFormat === 'ico') {
+                const pdfArrayBuffer = await selectedFile.arrayBuffer();
+                const pdfDoc = await pdfjsLib.getDocument({ data: pdfArrayBuffer }).promise;
+                const canvas = await renderPDFPageToCanvas(pdfDoc, 1);
+                const pngBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                const tempFile = new File([pngBlob], 'page.png', { type: 'image/png' });
+                convertedBlob = await convertToICO(tempFile);
+            } else {
+                convertedBlob = await convertPDFToImages(selectedFile, selectedFormat);
+            }
+
+            clearInterval(interval);
+            progressFill.style.width = '100%';
+            progressText.textContent = 'Conversion complete!';
+            setTimeout(() => {
+                progressContainer.style.display = 'none';
+                downloadSection.style.display = 'block';
+                incrementConversionCount(selectedFile ? selectedFile.size : 0);
+            }, 500);
+            return;
+        }
+
+        // PDF → DOCX: render pages as images and embed them in the document
+        if (extension === 'pdf' && selectedFormat === 'docx') {
+            progressText.textContent = 'Converting PDF with images...';
+            try {
+                convertedBlob = await convertPDFToDOCXWithImages(selectedFile, originalFileName);
+            } catch (e) {
+                console.warn('Image-preserving PDF→DOCX failed, falling back to text:', e);
+                convertedBlob = null;
+            }
+            if (convertedBlob) {
+                clearInterval(interval);
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Conversion complete!';
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    downloadSection.style.display = 'block';
+                    incrementConversionCount(selectedFile ? selectedFile.size : 0);
+                }, 500);
+                return;
+            }
+        }
+
+        // DOCX → PDF: preserve embedded images from the document
+        if (extension === 'docx' && selectedFormat === 'pdf') {
+            progressText.textContent = 'Converting with images...';
+            try {
+                convertedBlob = await convertDOCXToPDFWithImages(selectedFile, originalFileName);
+            } catch (e) {
+                console.warn('Image-preserving DOCX→PDF failed, falling back to text:', e);
+                convertedBlob = null;
+            }
+            if (convertedBlob) {
+                clearInterval(interval);
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Conversion complete!';
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    downloadSection.style.display = 'block';
+                    incrementConversionCount(selectedFile ? selectedFile.size : 0);
+                }, 500);
+                return;
+            }
         }
 
         // Step 1: Extract content from source file
