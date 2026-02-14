@@ -2604,6 +2604,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeBackToTop();
     initializeTypingAnimation();
     initializeMobileMenu();
+    initializeRippleEffect();
 });
 
 // ========================================
@@ -2781,5 +2782,32 @@ function initializeMobileMenu() {
     // Close on ESC
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && menu.classList.contains('active')) close();
+    });
+}
+
+// ========================================
+// Ripple Effect on Buttons
+// ========================================
+
+function initializeRippleEffect() {
+    const selectors = '.btn-convert, .btn-download, .quick-btn, .format-btn, .btn-ocr-convert, .btn-ocr-new, .contact-option';
+
+    document.addEventListener('click', (e) => {
+        const target = e.target.closest(selectors);
+        if (!target) return;
+
+        target.style.position = target.style.position || 'relative';
+        target.style.overflow = 'hidden';
+
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        const rect = target.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+
+        target.appendChild(ripple);
+        ripple.addEventListener('animationend', () => ripple.remove());
     });
 }

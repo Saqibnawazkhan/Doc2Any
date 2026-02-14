@@ -61,11 +61,20 @@ body {
    ======================================== */
 
 .header {
-    background: var(--hero-bg);
+    background: rgba(90, 97, 120, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     padding: 15px 0;
     position: sticky;
     top: 0;
     z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.3s;
+}
+
+[data-theme="dark"] .header {
+    background: rgba(13, 17, 23, 0.85);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
 }
 
 .nav {
@@ -124,14 +133,33 @@ body {
     text-decoration: none;
     font-size: 0.95rem;
     font-weight: 500;
-    transition: opacity 0.3s;
+    transition: all 0.3s;
     display: flex;
     align-items: center;
     gap: 5px;
+    position: relative;
+    padding-bottom: 4px;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent-green);
+    border-radius: 1px;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
 }
 
 .nav-link:hover {
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 .nav-link i {
@@ -2383,4 +2411,117 @@ body {
 
 .theme-toggle-mobile:hover {
     background: rgba(255, 255, 255, 0.2);
+}
+
+/* ========================================
+   Ripple Effect
+   ======================================== */
+
+.ripple-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(0);
+    animation: rippleAnim 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes rippleAnim {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* ========================================
+   3D Card Tilt on Format Cards
+   ======================================== */
+
+.format-card {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.format-card:hover {
+    transform: translateY(-5px) rotateX(5deg) rotateY(5deg);
+}
+
+.format-card:hover .format-icon {
+    transform: scale(1.15) translateZ(20px);
+}
+
+/* ========================================
+   Gradient Text on Section Titles
+   ======================================== */
+
+.section-title {
+    background: linear-gradient(135deg, #1a202c, var(--accent-blue), #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+[data-theme="dark"] .section-title {
+    background: linear-gradient(135deg, #e6edf3, var(--accent-blue), #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.ocr-section .section-title,
+.api-section .section-title {
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: white;
+    background-clip: unset;
+}
+
+/* ========================================
+   Glow Effect on Format Card Hover
+   ======================================== */
+
+.format-card::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent-blue), #764ba2, var(--accent-green));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.format-card:hover::before {
+    opacity: 1;
+}
+
+.format-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: var(--bg-light);
+    z-index: -1;
+}
+
+[data-theme="dark"] .format-card::after {
+    background: #21262d;
+}
+
+/* ========================================
+   Button Hover Glow
+   ======================================== */
+
+.btn-convert:hover,
+.quick-btn:hover {
+    box-shadow: 0 0 20px rgba(91, 110, 225, 0.5);
+}
+
+.btn-download:hover {
+    box-shadow: 0 0 20px rgba(104, 211, 145, 0.5);
 }
