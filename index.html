@@ -46,13 +46,13 @@
     <header class="header" role="banner">
         <div class="container">
             <nav class="nav" aria-label="Main navigation">
-                <div class="logo" role="img" aria-label="Doc2Any logo">
-                    <div class="logo-icon">
+                <a href="#convert" class="logo" role="img" aria-label="Doc2Any logo">
+                    <div class="logo-icon animated-logo">
                         <span class="logo-circle"></span>
                         <span class="logo-half"></span>
                     </div>
                     <span class="logo-text">Doc2Any</span>
-                </div>
+                </a>
                 <ul class="nav-links" role="menubar">
                     <li role="none"><a href="#convert" class="nav-link active" role="menuitem">Convert <i class="fas fa-chevron-down" aria-hidden="true"></i></a></li>
                     <li role="none"><a href="#ocr" class="nav-link" role="menuitem">OCR</a></li>
@@ -554,11 +554,24 @@
                     </ul>
                 </div>
             </div>
+            <!-- Newsletter Signup -->
+            <div class="newsletter-section">
+                <div class="newsletter-content">
+                    <h4><i class="fas fa-envelope" aria-hidden="true"></i> Stay Updated</h4>
+                    <p>Get notified about new features and format support</p>
+                </div>
+                <form class="newsletter-form" id="newsletterForm" aria-label="Newsletter signup">
+                    <input type="email" id="newsletterEmail" placeholder="Enter your email" required aria-label="Email address for newsletter">
+                    <button type="submit" class="newsletter-btn"><i class="fas fa-paper-plane" aria-hidden="true"></i> Subscribe</button>
+                </form>
+                <p class="newsletter-msg" id="newsletterMsg" aria-live="polite"></p>
+            </div>
+
             <div class="footer-bottom">
                 <div class="footer-social">
-                    <a href="https://github.com/Saqibnawazkhan" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                    <a href="https://twitter.com" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="https://linkedin.com" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/Saqibnawazkhan" target="_blank" title="GitHub" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a>
+                    <a href="https://twitter.com" target="_blank" title="Twitter" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                    <a href="https://linkedin.com" target="_blank" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin" aria-hidden="true"></i></a>
                 </div>
                 <p>&copy; 2025 Doc2Any. All rights reserved.</p>
             </div>
@@ -622,6 +635,38 @@
                 <button class="theme-toggle-mobile" id="themeToggleMobile">
                     <i class="fas fa-moon"></i> <span>Dark Mode</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Consent Banner -->
+    <div class="cookie-consent" id="cookieConsent" role="alert" aria-label="Cookie consent">
+        <div class="cookie-content">
+            <i class="fas fa-cookie-bite" aria-hidden="true"></i>
+            <p>We use cookies to enhance your experience. All processing happens locally in your browser.</p>
+        </div>
+        <div class="cookie-actions">
+            <button class="cookie-btn cookie-accept" id="cookieAccept">Accept</button>
+            <button class="cookie-btn cookie-decline" id="cookieDecline">Decline</button>
+        </div>
+    </div>
+
+    <!-- Error Boundary UI -->
+    <div class="error-boundary" id="errorBoundary" role="alert" style="display: none;">
+        <div class="error-boundary-content">
+            <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+            <h3>Something went wrong</h3>
+            <p id="errorBoundaryMsg">An unexpected error occurred. Please try again.</p>
+            <button class="error-boundary-btn" id="errorBoundaryDismiss">Dismiss</button>
+        </div>
+    </div>
+
+    <!-- Page Load Animation -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-logo">
+            <div class="logo-icon animated-logo">
+                <span class="logo-circle"></span>
+                <span class="logo-half"></span>
             </div>
         </div>
     </div>

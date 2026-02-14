@@ -2629,6 +2629,10 @@ document.addEventListener('DOMContentLoaded', () => {
     registerServiceWorker();
     initializeLazyLoading();
     initializeAccessibility();
+    initializeCookieConsent();
+    initializeErrorBoundary();
+    initializeNewsletter();
+    hidePageLoader();
 });
 
 // ========================================
@@ -3322,5 +3326,143 @@ function initializeLazyLoading() {
     lazySections.forEach(section => {
         section.classList.add('lazy-section');
         lazyObserver.observe(section);
+    });
+}
+
+// ========================================
+// Cookie Consent Banner (Change 46)
+// ========================================
+
+function initializeCookieConsent() {
+    const banner = document.getElementById('cookieConsent');
+    if (!banner) return;
+
+    // Check if user already responded
+    if (localStorage.getItem('doc2any_cookies')) {
+        return;
+    }
+
+    // Show banner after short delay
+    setTimeout(() => {
+        banner.classList.add('visible');
+    }, 1500);
+
+    const acceptBtn = document.getElementById('cookieAccept');
+    const declineBtn = document.getElementById('cookieDecline');
+
+    if (acceptBtn) {
+        acceptBtn.addEventListener('click', () => {
+            localStorage.setItem('doc2any_cookies', 'accepted');
+            banner.classList.remove('visible');
+        });
+    }
+
+    if (declineBtn) {
+        declineBtn.addEventListener('click', () => {
+            localStorage.setItem('doc2any_cookies', 'declined');
+            banner.classList.remove('visible');
+        });
+    }
+}
+
+// ========================================
+// Error Boundary UI (Change 47)
+// ========================================
+
+function initializeErrorBoundary() {
+    const boundary = document.getElementById('errorBoundary');
+    const dismissBtn = document.getElementById('errorBoundaryDismiss');
+    const msgEl = document.getElementById('errorBoundaryMsg');
+    if (!boundary) return;
+
+    // Global error handler
+    window.addEventListener('error', (event) => {
+        if (msgEl) msgEl.textContent = 'Error: ' + (event.message || 'An unexpected error occurred.');
+        boundary.style.display = 'flex';
+        event.preventDefault();
+    });
+
+    // Unhandled promise rejection handler
+    window.addEventListener('unhandledrejection', (event) => {
+        if (msgEl) msgEl.textContent = 'Error: ' + (event.reason?.message || 'An unexpected error occurred.');
+        boundary.style.display = 'flex';
+        event.preventDefault();
+    });
+
+    if (dismissBtn) {
+        dismissBtn.addEventListener('click', () => {
+            boundary.style.display = 'none';
+        });
+    }
+}
+
+// ========================================
+// Newsletter Signup (Change 49)
+// ========================================
+
+function initializeNewsletter() {
+    const form = document.getElementById('newsletterForm');
+    const msgEl = document.getElementById('newsletterMsg');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('newsletterEmail').value;
+
+        if (!email || !email.includes('@')) {
+            if (msgEl) {
+                msgEl.textContent = 'Please enter a valid email address.';
+                msgEl.className = 'newsletter-msg error';
+            }
+            return;
+        }
+
+        // Store subscription locally (no backend)
+        const subs = JSON.parse(localStorage.getItem('doc2any_newsletter') || '[]');
+        if (subs.includes(email)) {
+            if (msgEl) {
+                msgEl.textContent = 'You\'re already subscribed!';
+                msgEl.className = 'newsletter-msg success';
+            }
+            return;
+        }
+
+        subs.push(email);
+        localStorage.setItem('doc2any_newsletter', JSON.stringify(subs));
+
+        if (msgEl) {
+            msgEl.textContent = 'Thanks for subscribing! We\'ll keep you updated.';
+            msgEl.className = 'newsletter-msg success';
+        }
+
+        form.reset();
+
+        // Clear message after 5 seconds
+        setTimeout(() => {
+            if (msgEl) {
+                msgEl.textContent = '';
+                msgEl.className = 'newsletter-msg';
+            }
+        }, 5000);
+    });
+}
+
+// ========================================
+// Page Load Animation (Change 50)
+// ========================================
+
+function hidePageLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (!loader) return;
+
+    // Give the page a moment to render, then hide loader
+    setTimeout(() => {
+        loader.classList.add('hidden');
+        document.body.classList.add('loaded');
+    }, 800);
+
+    // Remove from DOM after transition
+    loader.addEventListener('transitionend', () => {
+        loader.remove();
     });
 }
