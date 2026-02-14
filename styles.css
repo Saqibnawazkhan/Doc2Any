@@ -3203,3 +3203,18 @@ kbd {
     border-radius: 8px;
     text-transform: uppercase;
 }
+
+/* ========================================
+   Lazy Loading Sections
+   ======================================== */
+
+.lazy-section {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.lazy-section.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}

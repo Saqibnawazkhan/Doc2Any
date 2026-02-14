@@ -1,0 +1,18 @@
+{
+  "name": "Doc2Any - File Converter",
+  "short_name": "Doc2Any",
+  "description": "Free online file converter - Convert PDF, DOCX, images and more. Fast, secure, and works offline.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#5a6178",
+  "theme_color": "#5B6EE1",
+  "orientation": "any",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%235B6EE1'/><text y='.9em' x='10' font-size='80'>🔄</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

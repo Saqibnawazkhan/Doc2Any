@@ -2626,6 +2626,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeQualitySlider();
     initializeFilePreview();
     initializeConversionHistory();
+    registerServiceWorker();
+    initializeLazyLoading();
 });
 
 // ========================================
@@ -3237,4 +3239,39 @@ function highlightRecommendedFormat(sourceExtension) {
             btn.classList.add('recommended');
         }
     }
+}
+
+// ========================================
+// Service Worker Registration
+// ========================================
+
+function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+            // Service worker registration failed silently
+        });
+    }
+}
+
+// ========================================
+// Lazy Loading for Below-Fold Content
+// ========================================
+
+function initializeLazyLoading() {
+    // Lazy load sections that are below the fold
+    const lazySections = document.querySelectorAll('.formats, .how-it-works, .ocr-section, .help-section');
+
+    const lazyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('loaded');
+                lazyObserver.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: '200px' });
+
+    lazySections.forEach(section => {
+        section.classList.add('lazy-section');
+        lazyObserver.observe(section);
+    });
 }
