@@ -2628,6 +2628,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeConversionHistory();
     registerServiceWorker();
     initializeLazyLoading();
+    initializeAccessibility();
 });
 
 // ========================================
@@ -2782,11 +2783,13 @@ function initializeMobileMenu() {
 
     menuBtn.addEventListener('click', () => {
         menu.classList.add('active');
+        menuBtn.setAttribute('aria-expanded', 'true');
         document.body.style.overflow = 'hidden';
     });
 
     function close() {
         menu.classList.remove('active');
+        menuBtn.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
     }
 
@@ -3244,6 +3247,52 @@ function highlightRecommendedFormat(sourceExtension) {
 // ========================================
 // Service Worker Registration
 // ========================================
+
+// ========================================
+// Accessibility Enhancements
+// ========================================
+
+function initializeAccessibility() {
+    // Make upload box keyboard-accessible
+    const uploadBox = document.getElementById('uploadBox');
+    if (uploadBox) {
+        uploadBox.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                document.getElementById('fileInput').click();
+            }
+        });
+    }
+
+    // Create live region for screen reader announcements
+    const liveRegion = document.createElement('div');
+    liveRegion.id = 'srAnnouncements';
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.setAttribute('aria-atomic', 'true');
+    liveRegion.className = 'sr-only';
+    document.body.appendChild(liveRegion);
+
+    // Make FAQ items keyboard-accessible
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.setAttribute('role', 'button');
+        q.setAttribute('tabindex', '0');
+        q.setAttribute('aria-expanded', 'false');
+        q.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                q.click();
+            }
+        });
+    });
+}
+
+// Announce to screen readers
+function announceToSR(message) {
+    const region = document.getElementById('srAnnouncements');
+    if (region) {
+        region.textContent = message;
+    }
+}
 
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
